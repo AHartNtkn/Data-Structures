@@ -1,7 +1,4 @@
 import sys
-sys.path.append('../queue_and_stack')
-from dll_queue import Queue
-from dll_stack import Stack
 
 
 # Canonical endofunctor map
@@ -35,12 +32,6 @@ def bst_in(Ftr):
 def bst_cata(alg, a):
     return alg(bst_efmap(lambda x: bst_cata(alg, x), bst_out(a)))
 
-# Algebra used to recursively detect a target value.
-def contains_alg(target, trF):
-    if trF is None:
-        return False
-    elif isinstance(trF, tuple):
-        return target == trF[1] or (trF[0] if target < trF[1] else trF[2])
 
 # Algebra for creating a list of items in the tree, in order.
 def in_order_alg(trF):
@@ -87,6 +78,45 @@ def post_order_dft_alg(trF):
 def post_order(tr):
     return bst_cata(post_order_dft_alg, tr)
 
+
+
+# Containment should be defined as a hylomorphism over lists
+# It *can* be defined as a catamorphism over BinTrees, but that
+# means one deconstruction is run per constructor; not per layer.
+# We need to generate a list corresponding to the trace of the
+# program using a coalgebra, and then collapse the list. This
+# will use only one operation per list constructor, which should
+# correspond to the tree's depth.
+def list_efmap(f, nF):
+    if nF is None:
+        return None
+    elif isinstance(nF, tuple):
+        return (nF[0], f(nF[1]))
+
+def list_hylo(alg, coalg, i):
+    return alg(list_efmap(lambda x: list_hylo(alg, coalg, x), coalg(i)))
+
+def contains_alg(target):
+    def go(lF):
+        if lF is None:
+            return False
+        elif isinstance(lF, tuple):
+            return target == lF[0] or lF[1]
+
+    return go
+
+def contains_coalg(target):
+    def go(bst):
+        if bst is None:
+            return []
+        else:
+            if target < bst.value:
+                return (bst.value, bst.left)
+            else:
+                return (bst.value, bst.right)
+
+    return go
+
 class BinarySearchTree:
     def __init__(self, value):
         self.value = value
@@ -109,7 +139,7 @@ class BinarySearchTree:
     # Return True if the tree contains the value
     # False if it does not
     def contains(self, target):
-        return bst_cata(lambda x: contains_alg(target, x), self)
+        return list_hylo(contains_alg(target), contains_coalg(target), self)
 
     # Return the maximum value found in the tree
     def get_max(self):
