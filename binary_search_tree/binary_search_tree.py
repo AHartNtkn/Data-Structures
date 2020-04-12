@@ -80,13 +80,13 @@ def post_order(tr):
 
 
 
-# Containment should be defined as a hylomorphism over lists
+# Containment should be defined as a hylomorphism over lists.
 # It *can* be defined as a catamorphism over BinTrees, but that
 # means one deconstruction is run per constructor; not per layer.
 # We need to generate a list corresponding to the trace of the
-# program using a coalgebra, and then collapse the list. This
+# program using a coalgebra and then collapse the list. This
 # will use only one operation per list constructor, which should
-# correspond to the tree's depth.
+# correspond to the tree's depth up to the found target.
 def list_efmap(f, nF):
     if nF is None:
         return None
@@ -101,19 +101,21 @@ def contains_alg(target):
         if lF is None:
             return False
         elif isinstance(lF, tuple):
-            return target == lF[0] or lF[1]
+            return lF[0] or lF[1]
 
     return go
 
 def contains_coalg(target):
     def go(bst):
         if bst is None:
-            return []
+            return None
         else:
             if target < bst.value:
-                return (bst.value, bst.left)
+                return (False, bst.left)
+            elif target == bst.value:
+                return (True, None)
             else:
-                return (bst.value, bst.right)
+                return (False, bst.right)
 
     return go
 
