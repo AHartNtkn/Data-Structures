@@ -18,16 +18,6 @@ def bst_out(tr):
     else:
         return (tr.left, tr.value, tr.right)
 
-# Canonical algebra into the tree
-def bst_in(Ftr):
-    if nF is None:
-        return None
-    elif isinstance(nF, tuple):
-        bst = BinarySearchTree(nF[1])
-        bst.left = nF[0]
-        bst.right = nF[2]
-        return bst
-
 # Generic catamorphism over BSTs
 def bst_cata(alg, a):
     return alg(bst_efmap(lambda x: bst_cata(alg, x), bst_out(a)))
