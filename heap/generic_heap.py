@@ -47,25 +47,18 @@ class Heap:
             self.storage[parent_index], self.storage[index] =\
             self.storage[index], self.storage[parent_index]
 
-    def _sift_down(self, index):
-        #print(f"Storage is of size {len(self.storage)}.")
+    def _sift_down(self, index):-
         if index >= len(self.storage):
             return None
 
         child_1_index = first_child(index)
         if child_1_index >= len(self.storage):
-            return None
-        #print(f"First child is at {child_1_index} and is in range.")
+            return None-
 
         child_2_index = second_child(index)
-        if child_2_index >= len(self.storage):
-            if self.comparator(self.storage[child_1_index], self.storage[index]):
-                self.storage[child_1_index], self.storage[index] =\
-                self.storage[index], self.storage[child_1_index]
-            return None
-        #print(f"Second child is at {child_2_index} and is in range.")
 
-        if self.comparator(self.storage[child_1_index], self.storage[child_2_index]):
+        if child_2_index >= len(self.storage) or\
+           self.comparator(self.storage[child_1_index], self.storage[child_2_index]):
             if self.comparator(self.storage[child_1_index], self.storage[index]):
                 self.storage[child_1_index], self.storage[index] =\
                 self.storage[index], self.storage[child_1_index]
