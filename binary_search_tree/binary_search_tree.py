@@ -1,7 +1,4 @@
-# Canonical endofunctor map
-# Here, the endofunctor is modeled as a type which is either
-# None, modeling an empty leaf, or a tuple consisting of
-# the left tree recurse, the value, and the right tree recurse.
+# Canonical endofunctor map over BSTs
 def bst_efmap(f, nF):
     if nF is None:
         return None
