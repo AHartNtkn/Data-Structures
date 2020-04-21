@@ -8,40 +8,34 @@ import sys
 def bst_efmap(f, nF):
     if nF is None:
         return None
-    elif isinstance(nF, tuple):
-        return (f(nF[0]), nF[1], f(nF[2]))
-
-# Canonical coalgebra out of the tree
-def bst_out(tr):
-    if tr is None:
-        return None
-    else:
-        return (tr.left, tr.value, tr.right)
+    elif isinstance(nF, BinarySearchTree):
+        return BinarySearchTree(nF.value, f(nF.left), f(nF.right))
 
 # Generic catamorphism over BSTs
-def bst_cata(alg, a):
-    return alg(bst_efmap(lambda x: bst_cata(alg, x), bst_out(a)))
+def bst_cata(alg, bst):
+    return alg(bst_efmap(lambda x: bst_cata(alg, x), bst))
 
+# A generic algebra generated from an ordering
+def order_alg(*order):
+    fst, snd, trd = order
+    def alg(trF):
+      if trF is None:
+          return []
+      elif isinstance(trF, BinarySearchTree):
+          out = (trF.left, [trF.value], trF.right)
 
-# Algebra for creating a list of items in the tree, in order.
-def in_order_alg(trF):
-    if trF is None:
-        return []
-    elif isinstance(trF, tuple):
-        return trF[0] + [trF[1]] + trF[2]
+          return out[fst] + out[snd] + out[trd]
+
+    return alg
 
 def in_order(tr):
-    return bst_cata(in_order_alg, tr)
-
-# Algebra for creating a list of items in the tree, depth first (pre-order).
-def depth_first_alg(trF):
-    if trF is None:
-        return []
-    elif isinstance(trF, tuple):
-        return [trF[1]] + trF[0] + trF[2]
+    return bst_cata(order_alg(0, 1, 2), tr)
 
 def debth_first(tr):
-    return bst_cata(depth_first_alg, tr)
+    return bst_cata(order_alg(1, 0, 2), tr)
+
+def post_order(tr):
+    return bst_cata(order_alg(0, 2, 1), tr)
 
 # riffle two lists together
 def riffle(l1, l2):
@@ -52,21 +46,11 @@ def riffle(l1, l2):
 def breadth_first_alg(trF):
     if trF is None:
         return []
-    elif isinstance(trF, tuple):
-        return [trF[1]] + riffle(trF[2], trF[0])
+    elif isinstance(trF, BinarySearchTree):
+        return [trF.value] + riffle(trF.right, trF.left)
 
 def breadth_first(tr):
     return bst_cata(breadth_first_alg, tr)
-
-# Algebra for creating a list of items in the tree, depth first (post-order).
-def post_order_dft_alg(trF):
-    if trF is None:
-        return []
-    elif isinstance(trF, tuple):
-        return trF[0] + trF[2] + [trF[1]]
-
-def post_order(tr):
-    return bst_cata(post_order_dft_alg, tr)
 
 
 
@@ -109,11 +93,14 @@ def contains_coalg(target):
 
     return go
 
+
+
+
 class BinarySearchTree:
-    def __init__(self, value):
+    def __init__(self, value, left = None, right = None):
         self.value = value
-        self.left = None
-        self.right = None    
+        self.left = left
+        self.right = right    
 
     # Insert the given value into the tree
     def insert(self, value):
