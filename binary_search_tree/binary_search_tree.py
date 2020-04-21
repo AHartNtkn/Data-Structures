@@ -10,7 +10,7 @@ def bst_cata(alg, bst):
     return alg(bst_efmap(lambda x: bst_cata(alg, x), bst))
 
 # A generic algebra generated from an ordering
-def order_alg(*order):
+def dfs_alg(*order):
     fst, snd, trd = order
     def alg(trF):
       if trF is None:
@@ -23,13 +23,13 @@ def order_alg(*order):
     return alg
 
 def in_order(tr):
-    return bst_cata(order_alg(0, 1, 2), tr)
+    return bst_cata(dfs_alg(0, 1, 2), tr)
 
 def debth_first(tr):
-    return bst_cata(order_alg(1, 0, 2), tr)
+    return bst_cata(dfs_alg(1, 0, 2), tr)
 
 def post_order(tr):
-    return bst_cata(order_alg(0, 2, 1), tr)
+    return bst_cata(dfs_alg(0, 2, 1), tr)
 
 # riffle two lists together
 def riffle(l1, l2):
