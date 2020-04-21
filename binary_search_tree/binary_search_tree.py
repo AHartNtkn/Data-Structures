@@ -74,7 +74,7 @@ def contains_alg(target):
     return go
 
 def contains_coalg(target):
-    def go(bst):
+    def coalg(bst):
         if bst is None:
             return None
         else:
@@ -85,7 +85,7 @@ def contains_coalg(target):
             else:
                 return (False, bst.right)
 
-    return go
+    return coalg
 
 
 
