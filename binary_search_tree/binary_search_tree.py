@@ -1,6 +1,3 @@
-import sys
-
-
 # Canonical endofunctor map
 # Here, the endofunctor is modeled as a type which is either
 # None, modeling an empty leaf, or a tuple consisting of
