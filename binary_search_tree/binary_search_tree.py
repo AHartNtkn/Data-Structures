@@ -22,15 +22,6 @@ def dfs_alg(*order):
 
     return alg
 
-def in_order(tr):
-    return bst_cata(dfs_alg(0, 1, 2), tr)
-
-def debth_first(tr):
-    return bst_cata(dfs_alg(1, 0, 2), tr)
-
-def post_order(tr):
-    return bst_cata(dfs_alg(0, 2, 1), tr)
-
 # riffle two lists together
 def riffle(l1, l2):
     m = min(len(l1), len(l2))
@@ -42,9 +33,6 @@ def breadth_first_alg(trF):
         return []
     elif isinstance(trF, BinarySearchTree):
         return [trF.value] + riffle(trF.right, trF.left)
-
-def breadth_first(tr):
-    return bst_cata(breadth_first_alg, tr)
 
 
 
@@ -135,25 +123,25 @@ class BinarySearchTree:
     # Print all the values in order from low to high
     # Hint:  Use a recursive, depth first traversal
     def in_order_print(self, node):
-        [ print(x) for x in in_order(self) ] 
+        [ print(x) for x in bst_cata(dfs_alg(0, 1, 2), self) ] 
 
     # Print the value of every node, starting with the given node,
     # in an iterative breadth first traversal
     def bft_print(self, node):
-        [ print(x) for x in breadth_first(self) ] 
+        [ print(x) for x in bst_cata(breadth_first_alg, self) ] 
 
     # Print the value of every node, starting with the given node,
     # in an iterative depth first traversal
     def dft_print(self, node):
-        [ print(x) for x in debth_first(self) ] 
+        [ print(x) for x in bst_cata(dfs_alg(1, 0, 2), self) ] 
 
     # STRETCH Goals -------------------------
     # Note: Research may be required
 
     # Print Pre-order recursive DFT
     def pre_order_dft(self, node):
-        [ print(x) for x in debth_first(self) ] 
+        [ print(x) for x in bst_cata(dfs_alg(1, 0, 2), self) ] 
 
     # Print Post-order recursive DFT
     def post_order_dft(self, node):
-        [ print(x) for x in post_order(self) ] 
+        [ print(x) for x in bst_cata(dfs_alg(0, 2, 1), self) ] 
