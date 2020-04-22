@@ -47,13 +47,13 @@ class Heap:
             self.storage[parent_index], self.storage[index] =\
             self.storage[index], self.storage[parent_index]
 
-    def _sift_down(self, index):-
+    def _sift_down(self, index):
         if index >= len(self.storage):
             return None
 
         child_1_index = first_child(index)
         if child_1_index >= len(self.storage):
-            return None-
+            return None
 
         child_2_index = second_child(index)
 
